@@ -27,14 +27,24 @@ public class Product implements Serializable {
 	private String condition;		// 상태
 	private String file;			// 파일 경로 변수 추가
 	private int quantity;			// 장바구니 개수 
-
+	
 	// 
 	private String userId;			// 회원ID
 	private int orderNo;			// 주문번호
 	private String type;			// 입출고 타입
+	private int amount;				// 수량
+	
 	
 	public Product() {
 		
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 
 	public Product(String productId, String name, Integer unitPrice) {
