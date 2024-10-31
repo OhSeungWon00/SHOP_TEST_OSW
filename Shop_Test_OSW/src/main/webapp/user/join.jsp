@@ -65,7 +65,7 @@
 			
 			<div class="input-group mb-3 row">
 				<div class="col-md-4 p-0">
-					<label class="input-group-text" id="">생일</label>
+					<label class="input-group-text" id="birth">생일</label>
 				</div>
 				<div class="col-md-8 p-0">
 					<div class="row d-flex justify-content-between w-100 m-0">
@@ -98,7 +98,7 @@
 			</div>
 			
 			<div class="input-group mb-3 row">
-				<label class="input-group-text col-md-4" id="">이메일</label>
+				<label class="input-group-text col-md-4" id="mail">이메일</label>
 				
 				<div class="row justify-content-between col-md-8 align-items-center p-0">
 					<div class="col-sm-5 col-md-5 px-0">
@@ -119,13 +119,13 @@
 			</div>
 			
 			<div class="input-group mb-3 row">
-				<label class="input-group-text col-md-4" id="">전화번호</label>
+				<label class="input-group-text col-md-4" id="phone">전화번호</label>
 				<input type="text" class="form-control col-md-8" 
 					   name="phone" placeholder="전화번호">
 			</div>
 			
 			<div class="input-group mb-3 row">
-				<label class="input-group-text col-md-4" id="">주소</label>
+				<label class="input-group-text col-md-4" id="address">주소</label>
 				<input type="text" class="form-control col-md-8" 
 					   name="address" placeholder="주소">
 			</div>

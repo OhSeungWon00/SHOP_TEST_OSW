@@ -1,4 +1,6 @@
 <%@page import="java.net.URLDecoder"%>
+<%@page import="shop.dao.UserRepository"%>
+<%@page import="shop.dto.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -6,7 +8,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Shop</title>
-	<jsp:include page="/layout/meta.jsp" /> <jsp:include page="/layout/link.jsp" />
+	<jsp:include page="/layout/meta.jsp" /> 
+	<jsp:include page="/layout/link.jsp" />
 </head>
 <body>   
 	<% 
@@ -17,13 +20,20 @@
 		String loginId = (String) session.getAttribute("loginId");
 		loginId = loginId != null ? loginId : "";
 		
-		if( loginId != null && !loginId.equals("") ) {
+		if (loginId != null && !loginId.equals("")) {
 			response.sendRedirect(root + "/user/logged.jsp");
 		}
 		
 		// 아이디 저장 쿠키 가져오기
-		
-		
+		Cookie[] cookies = request.getCookies();
+		String rememberId = null;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if ("id".equals(cookie.getName())) {
+					rememberId = URLDecoder.decode(cookie.getValue(), "UTF-8");
+				}
+			}
+		}
 	%>
 	<jsp:include page="/layout/header.jsp" />
 	<div class="px-4 py-5 mt-5 text-center">
@@ -35,7 +45,7 @@
 	  <form action="login_pro.jsp" method="post">
 	    <div class="form-floating">
 	      <input type="text" class="form-control" id="floatingInput" name="id" 
-	      		 value="<%= loginId %>" placeholder="아이디" autofocus>
+	      		 value="<%= rememberId != null ? rememberId : "" %>" placeholder="아이디" autofocus>
 	      <label for="floatingInput">아이디</label>
 	    </div>
 	    <div class="form-floating">
@@ -45,18 +55,7 @@
 	
 	    <div class="form-check text-start my-3 d-flex justify-content-around">
 	    	<div class="item">
-	    	  <%
-	    	  	if( rememberId != null && rememberId.equals("on") ) {
-	    	  %>
-			      <input class="form-check-input" type="checkbox" name="remember-id" id="flexCheckDefault1"
-			      		 checked>
-			  <%
-	    	  	} else {
-	    	  %>  
-			      <input class="form-check-input" type="checkbox" name="remember-id" id="flexCheckDefault1">
-			  <% 
-	    	  	}
-	    	  %>	
+	    	  <input class="form-check-input" type="checkbox" name="remember-id" id="flexCheckDefault1">
 		      <label class="form-check-label" for="flexCheckDefault1">아이디 저장</label>
 	    	</div>
 	    	<div class="item">
@@ -67,7 +66,7 @@
 	    </div>
 	    <p class="text-center text-danger">
 	    	<%
-	    		if( error != null && error.equals("0") ) {
+	    		if (error != null && error.equals("0")) {
 	    	%>
 	    		아이디 또는 비밀번호를 잘못 입력했습니다.
 	    	<%
@@ -86,11 +85,3 @@
 	<jsp:include page="/layout/script.jsp" />
 </body>
 </html>
-
-
-
-
-
-
-
-
