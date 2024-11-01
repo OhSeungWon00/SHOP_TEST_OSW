@@ -6,7 +6,7 @@
 <%@page import="java.io.IOException"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+
 <%
     String id = request.getParameter("id");
     String pw = request.getParameter("pw");
@@ -20,10 +20,11 @@
         response.sendRedirect("login.jsp?error=0");
     } else {
         // 로그인 성공
-        // - 세션에 아이디 등록
-        session.setAttribute("loginId", loginUser.getId());
+        // - 세션에 사용자 정보 등록
+        session.setAttribute("loginUser", loginUser); // User 객체 전체 저장
+        session.setAttribute("loginId", loginUser.getId()); // 아이디 저장
 
-        // 아이디 저장
+        // 아이디 저장 쿠키 가져오기
         String rememberId = request.getParameter("remember-id");
         if ("on".equals(rememberId)) {
             // 쿠키 생성 및 설정
@@ -46,11 +47,11 @@
             rememberMeCookie.setMaxAge(60 * 60 * 24 * 30); // 30일 동안 유효
             response.addCookie(rememberMeCookie);
             
-            // DB에 사용자 토큰 정보 저장 (여기서는 UserRepository에 해당 메서드 추가 필요)
+            // DB에 사용자 토큰 정보 저장 (UserRepository에 해당 메서드 추가 필요)
             userDAO.savePersistentLogin(loginUser.getId(), token);
         }
 
         // 로그인 성공 페이지로 이동
-        response.sendRedirect("complete.jsp?msg=0");
+        response.sendRedirect("index2.jsp");
     }		
 %>

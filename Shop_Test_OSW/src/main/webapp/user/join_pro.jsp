@@ -37,8 +37,18 @@
 
     // 회원가입 성공 여부에 따라 화면 전환
     if (result > 0) {
-        response.sendRedirect("complete.jsp"); // 메인 페이지로 이동
+    	%>
+        <script>
+           window.location.href = "complete.jsp?msg=1"; // 리다이렉트
+       </script>
+       <%
     } else {
-        response.sendRedirect("signup.jsp?error=0"); // 회원가입 실패 시, 에러 메시지와 함께 다시 회원가입 페이지로 이동
+        // 회원가입 실패 시 에러 메시지와 함께 다시 회원가입 페이지로 이동
+        %>
+         <script>
+            window.location.href = "join.jsp"; // 리다이렉트
+        </script>
+        <%
+        return; // 중단
     }
 %>

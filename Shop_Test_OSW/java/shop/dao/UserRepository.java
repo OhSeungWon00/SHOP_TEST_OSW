@@ -18,8 +18,8 @@ public class UserRepository extends JDBConnection {
 	public int insert(User user) {
 		int result = 0;
 
-		String sql = " INSERT INTO user(id, password, name, gender, birth, mail, phone, address, regist_day)"
-				+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = " INSERT INTO user(id, password, name, gender, birth, mail, phone, address)"
+				+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			psmt = con.prepareStatement(sql);
@@ -31,7 +31,6 @@ public class UserRepository extends JDBConnection {
 			psmt.setString(6, user.getMail());
 			psmt.setString(7, user.getPhone());
 			psmt.setString(8, user.getAddress());
-			psmt.setString(9, user.getRegistDay());
 
 			result = psmt.executeUpdate(); // SQL 쿼리 실행 및 반영된 행 수 반환
 			System.out.println();
@@ -70,7 +69,6 @@ public class UserRepository extends JDBConnection {
 				user.setMail(rs.getString("mail")); // 이메일 설정
 				user.setPhone(rs.getString("phone")); // 전화번호 설정
 				user.setAddress(rs.getString("address")); // 주소 설정
-				user.setRegistDay(rs.getString("regist_day")); // 등록일 설정
 			}
 		} catch (SQLException e) {
 			System.err.println("로그인 중 예외 발생!!");
@@ -133,34 +131,23 @@ public class UserRepository extends JDBConnection {
 	 */
 	public int update(User user) {
 		int result = 0; // 수정된 행 수
-		String sql = "UPDATE user SET password = ?, name = ?, gender = ?, birth = ?, mail = ?, phone = ?, address = ? WHERE id = ?"; // SQL
-																																		// 쿼리
+		String sql = "UPDATE user SET name = ?, gender = ?, birth = ?, mail = ?, phone = ?, address = ? WHERE id = ?";
 
 		try {
 			psmt = con.prepareStatement(sql);
-			psmt.setString(1, user.getPassword()); // 비밀번호 설정
-			psmt.setString(2, user.getName()); // 이름 설정
-			psmt.setString(3, user.getGender()); // 성별 설정
-			psmt.setString(4, user.getBirth()); // 생년월일 설정
-			psmt.setString(5, user.getMail()); // 이메일 설정
-			psmt.setString(6, user.getPhone()); // 전화번호 설정
-			psmt.setString(7, user.getAddress()); // 주소 설정
-			psmt.setString(8, user.getId()); // 사용자 ID 설정
+			psmt.setString(1, user.getName());
+			psmt.setString(2, user.getGender());
+			psmt.setString(3, user.getBirth());
+			psmt.setString(4, user.getMail());
+			psmt.setString(5, user.getPhone());
+			psmt.setString(6, user.getAddress());
+			psmt.setString(7, user.getId());
 
 			result = psmt.executeUpdate(); // 쿼리 실행 (업데이트)
 
 		} catch (SQLException e) {
 			System.err.println("회원 수정 중 예외 발생!!");
 			e.printStackTrace();
-		} finally {
-			try {
-				// 자원 해제
-				if (psmt != null)
-					psmt.close();
-			} catch (SQLException e) {
-				System.err.println("자원 해제 중 예외 발생!!");
-				e.printStackTrace();
-			}
 		}
 		return result; // 수정된 행의 수 반환
 	}
@@ -184,16 +171,7 @@ public class UserRepository extends JDBConnection {
 		} catch (SQLException e) {
 			System.err.println("회원 삭제 중 예외 발생!!");
 			e.printStackTrace();
-		} finally {
-			try {
-				// 자원 해제
-				if (psmt != null)
-					psmt.close();
-			} catch (SQLException e) {
-				System.err.println("자원 해제 중 예외 발생!!");
-				e.printStackTrace();
-			}
-		}
+		} 
 		return result; // 삭제된 행의 수 반환
 	}
 
