@@ -15,75 +15,89 @@
 <jsp:include page="/layout/link.jsp" />
 </head>
 <body>
-	<% 
-		// 주문 내역 목록을 세션에서 가져오기
-		boolean login = session.getAttribute("loginId") != null;
-
-		// 세션에서 주문 관련 정보를 가져옴
-		String orderPhone = (String) session.getAttribute("orderPhone"); // orderPhone을 세션에서 가져오기
-		List<Product> orderList = new ArrayList<>(); // 기본값으로 빈 리스트 생성
-		int orderCount = 0;
-
-		if (login) {
-			// 로그인한 경우, 주문 내역을 데이터베이스에서 가져오는 로직
-			OrderRepository orderRepository = new OrderRepository();
-			orderList = orderRepository.getOrderListByUserId((String) session.getAttribute("loginId"));
-			orderCount = orderList.size();
-		}
-	%>
-
-	<jsp:include page="/layout/header.jsp" />
+	<nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+	  <div class="container-fluid">
+	    <a class="navbar-brand" href="/">Home</a>
+	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	        <li class="nav-item">
+	          <a class="nav-link active" aria-current="page" href="/shop/products.jsp">Product</a>
+	        </li>
+	      </ul>
+	       <ul class="navbar-nav d-flex align-items-center px-3">
+	        <li class="nav-item">
+	        <div class="dropdown">
+		      <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+		        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+		        <strong>zzzx</strong>
+		      </a>
+		      <ul class="dropdown-menu text-small shadow">
+		        <li><a class="dropdown-item" href="/user/index.jsp">마이 페이지</a></li>
+		        <li><a class="dropdown-item" href="/user/update.jsp">회원정보 수정</a></li>
+		        <li><a class="dropdown-item" href="/user/order.jsp">주문내역</a></li>
+		        <li><hr class="dropdown-divider"></li>
+		        <li><a class="dropdown-item" href="/user/logout.jsp">로그아웃</a></li>
+		      </ul>
+		    </div>
+	        </li>
+	        <li class="nav-item">
+		        <a class="nav-link position-relative" aria-current="page" href="/shop/cart.jsp">
+		        	<i class="material-symbols-outlined">shopping_bag</i>
+		        	<span class="cart-count">2</span>
+		        </a>
+	        </li>
+	      </ul>
+	      <form class="d-flex" role="search" action="/shop/products.jsp" method="get">
+	        <input class="form-control me-2" type="search" name="keyword" placeholder="Search" aria-label="Search"
+	        		value="">
+	        <button class="btn btn-outline-success" type="submit">Search</button>
+	      </form>
+	    </div>
+	  </div>
+	</nav>
 
 	<div class="row m-0 mypage">
 		<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
 			<div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary">
-				<ul class="nav nav-pills flex-column mb-auto">
-					<!-- 로그인 시 -->
-					<% if( login ) { %>
-					<li class="nav-item"><a href="index.jsp" class="nav-link link-body-emphasis"> 마이 페이지 </a></li>
-					<li class="nav-item"><a href="update.jsp" class="nav-link link-body-emphasis"> 회원정보 수정 </a></li>
-					<% }  %>
-
-					<li><a href="#" class="nav-link active" aria-current="page">주문내역 </a></li>
-				</ul>
-				<hr>
-			</div>
+			    <ul class="nav nav-pills flex-column mb-auto">
+			      <li class="nav-item">
+			        <a href="/user/index.jsp" class="nav-link link-body-emphasis">마이 페이지</a>
+			      </li>
+			      <li class="nav-item">
+			        <a href="/user/update.jsp" class="nav-link link-body-emphasis">회원정보 수정</a>
+			      </li>
+			      <li>
+			        <a href="#" class="nav-link active" aria-current="page">주문내역</a>
+			      </li>
+			    </ul>
+			    <hr>
+			  </div>
 		</div>
-
+		
 		<div class="col-md-9 ms-sm-auto col-lg-10 p-0 m-0">
 			<div class="px-4 py-3 my-3 text-center">
 				<h1 class="display-5 fw-bold text-body-emphasis">주문 내역</h1>
 				<div class="col-lg-6 mx-auto">
-					<% if( !login ) { %>
-					<p class="lead mb-4">비회원 주문하신 경우, 전화번호와 주문 비밀번호를 입력해주세요.</p>
-					<% } %>
+					<!-- 주문 내역 조회 양식 -->
+					<form action="/user/order_pro.jsp" method="post">
+						<div class="mb-3">
+							<label for="phone" class="form-label">전화번호</label>
+							<input type="text" id="phone" name="phone" class="form-control" required placeholder="전화번호 입력" />
+						</div>
+						<div class="mb-3">
+							<label for="orderPassword" class="form-label">주문 비밀번호</label>
+							<input type="password" id="orderPassword" name="orderPassword" class="form-control" required placeholder="주문 비밀번호 입력" />
+						</div>
+						<button type="submit" class="btn btn-primary">조회</button>
+					</form>
 				</div>
 			</div>
-
-			<!-- 주문 내역 영역 -->
+			
+			<!-- 주문 내역 목록 -->
 			<div class="container shop m-auto mb-5">
-				<form action="order_pro.jsp" method="post">
-					<% if( !login ) { %>
-					<div class="mb-5">
-						<table class="table">
-							<tr>
-								<td>전화번호 :</td>
-								<td><input type="text" class="form-control" name="phone" placeholder="- 생략하고 숫자만 입력해주세요."></td>
-							</tr>
-							<tr>
-								<td>주문 비밀번호 :</td>
-								<td><input type="password" class="form-control" name="orderPw" placeholder="주문 비밀번호를 입력해주세요."></td>
-							</tr>
-						</table>
-						<div class="btn-box d-grid gap-2">
-							<button type="submit" class="btn btn-outline-primary btn-lg px-4 gap-3">조회</button>
-						</div>
-					</div>
-					<% } %>
-				</form>
-
-				<% if( login || ( orderPhone != null && !orderPhone.isEmpty() ) ) { %>
-				<!-- 주문 내역 목록 -->
 				<table class="table table-striped table-hover table-bordered text-center align-middle">
 					<thead>
 						<tr class="table-primary">
@@ -96,87 +110,27 @@
 						</tr>
 					</thead>
 					<tbody>
-						<%
-							int sum = 0;
-							for(int i = 0 ; i < orderCount ; i++) {
-								Product product = orderList.get(i);
-								int total = product.getUnitPrice() * product.getQuantity();
-								sum += total;
-						%>
-						<tr>
-							<td><%= product.getOrderNo() %></td>
-							<td><%= product.getName() %></td>
-							<td><%= product.getUnitPrice() %></td>
-							<td><%= product.getQuantity() %></td>
-							<td><%= total %></td>
-							<td></td>
-						</tr>
-						<%
-							}
-						%>
+						<!-- 주문 내역 데이터가 여기에 표시됩니다 -->
 					</tbody>
 					<tfoot>
-						<%
-							if( orderCount == 0 ) { // 주문 내역이 없을 경우
-						%>
 						<tr>
-							<td colspan="6">추가된 상품이 없습니다.</td>
+							<td colspan="6">추가된 상품이 없습니다.</td>	
 						</tr>
-						<% } else { %>
-						<tr>
-							<td></td>
-							<td></td>
-							<td>총액</td>
-							<td id="cart-sum"><%= sum %></td>
-							<td></td>
-						</tr>
-						<%
-							}
-						%>
 					</tfoot>
 				</table>
-				<% } %>
 			</div>
-
-			<jsp:include page="/layout/footer.jsp" />
+			
+<footer class="container p-5">
+	<p>copyright Shop</p>
+</footer>
 		</div>
 	</div>
+	
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="/static/js/validation.js"></script>
 
-	<jsp:include page="/layout/script.jsp" />
-
-	<script>
-		let form = document.updateForm;
-
-		// 성별 선택
-		let tempGender = document.getElementById('temp-gender');
-		let radioFemale = document.getElementById('gender-female');
-		let radioMale = document.getElementById('gender-male');
-		if (tempGender.value == '남') {
-			radioMale.checked = true;
-		}
-		if (tempGender.value == '여') {
-			radioFemale.checked = true;
-		}
-
-		// 생일 월 (select) 선택
-		let tempMonth = document.getElementById('temp-month');
-		let selectMonth = form.month;
-		selectMonth.value = tempMonth.value;
-
-		// 메일 도메인 (select) 선택
-		let tempEmail2 = document.getElementById('temp-email2');
-		let selectEmail2 = form.email2;
-		selectEmail2.value = tempEmail2.value;
-
-		// 탈퇴 체크
-		function alertDel() {
-			let form = document.updateForm;
-			let check = confirm('정말 탈퇴하시겠습니까?');
-			if (check) {
-				form.action = 'delete.jsp';
-				form.submit();
-			}
-		}
-	</script>
+<script>
+	// 기존 스크립트가 여기에 들어갑니다.
+</script>
 </body>
 </html>

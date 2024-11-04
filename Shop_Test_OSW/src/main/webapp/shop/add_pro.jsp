@@ -1,60 +1,120 @@
-<%@page import="shop.dao.ProductRepository"%>
 <%@page import="shop.dto.Product"%>
+<%@page import="org.apache.commons.fileupload.FileItem"%>
+<%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
+<%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
+<%@page import="java.util.List"%>
+<%@page import="shop.dao.ProductRepository"%>
 <%@page import="java.io.File"%>
 <%@page import="java.io.IOException"%>
-<%@page import="javax.servlet.ServletException"%>
-<%@page import="javax.servlet.http.Part"%>
-<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 
 <%
-    request.setCharacterEncoding("UTF-8");
+DiskFileItemFactory factory = new DiskFileItemFactory();
+ServletFileUpload upload = new ServletFileUpload(factory);
 
-    // 상품 정보 가져오기
-    String productId = request.getParameter("productId");
-    String name = request.getParameter("name");
-    Integer unitPrice = Integer.parseInt(request.getParameter("unitPrice"));
-    String description = request.getParameter("description");
-    String manufacturer = request.getParameter("manufacturer");
-    String category = request.getParameter("category");
-    long unitsInStock = Long.parseLong(request.getParameter("unitsInStock"));
-    String condition = request.getParameter("condition");
+List<FileItem> items = upload.parseRequest(request);
+String productId = null;
+String name = null;
+Integer unitPrice = null;
+String description = null;
+String manufacturer = null;
+String category = null;
+String fileName = null;
 
-    /* // 파일 업로드 처리
-    Part filePart = request.getPart("file"); // 업로드된 파일
-    String fileName = filePart.getSubmittedFileName(); // 파일 이름 가져오기
-    String filePath = "/uploads/" + fileName; // 파일 저장 경로 (기본 설정)
-    String fullPath = application.getRealPath(filePath); // 서버에서의 실제 경로
 
-    // 파일을 서버에 저장
-    File fileSaveDir = new File(application.getRealPath("/uploads"));
-    if (!fileSaveDir.exists()) {
-        fileSaveDir.mkdirs(); // 업로드 디렉토리가 없으면 생성
-    }
-    
-    filePart.write(fullPath); // 파일을 지정된 경로에 저장 */
+Integer unitsInStock = null;
+String condition = null;
 
-    // Product 객체 생성
-    String filePath = "abc";
-    Product product = new Product();
-    product.setProductId(productId);
-    product.setName(name);
-    product.setUnitPrice(unitPrice);
-    product.setDescription(description);
-    product.setManufacturer(manufacturer);
-    product.setCategory(category);
-    product.setUnitsInStock(unitsInStock);
-    product.setCondition(condition);
-    product.setFile(filePath); // 파일 경로 설정
 
-    // 데이터베이스에 상품 정보 저장
-    ProductRepository productRepository = new ProductRepository();
-    int result = productRepository.insert(product); // 수정된 부분
-    boolean isSuccess = (result > 0); // 추가된 상품의 수에 따라 성공 여부 판단
+for (FileItem item : items) {
+	if (item.isFormField()) {
+		String fieldName = item.getFieldName();
+		String fieldValue = item.getString("utf-8"); 
 
-    if (isSuccess) {
-        out.println("<script>alert('상품이 성공적으로 등록되었습니다.'); location.href='./products.jsp';</script>");
-    } else {
-        out.println("<script>alert('상품 등록에 실패하였습니다.'); history.back();</script>");
-    }
+		switch (fieldName) {
+		case "productId":
+			productId = fieldValue;
+			break;
+		case "name":
+			name = fieldValue;
+			break;
+		case "unitPrice":
+			try {
+				unitPrice = Integer.parseInt(fieldValue.trim());
+			} catch (NumberFormatException e) {
+				out.println("<p style='color:red;'>잘못된 가격 형식입니다. 숫자만 입력해 주세요.</p>");
+				return;
+			}
+			break;
+		case "description":
+			description = fieldValue;
+			break;
+		case "manufacturer":
+			manufacturer = fieldValue;
+			break;
+		case "category":
+			category = fieldValue;
+			break;
+		case "unitsInStock":
+			try {
+				unitsInStock = Integer.parseInt(fieldValue.trim());
+			} catch (NumberFormatException e) {
+				out.println("<p style='color:red;'>잘못된 재고 수량 형식입니다. 숫자만 입력해 주세요.</p>");
+				return;
+			}
+			break;
+		case "condition":
+			condition = fieldValue;
+			break;
+		}
+	} else {
+		fileName = item.getName(); 
+		if (fileName != null && !fileName.isEmpty()) {
+			
+			String uploadDirectory = getServletContext().getRealPath("/") + "uploads"; // 업로드 디렉토리
+			File uploadDir = new File(uploadDirectory);
+			if (!uploadDir.exists()) uploadDir.mkdir(); // 디렉토리 생성
 
+			
+			File uploadedFile = new File(uploadDir, fileName);
+			item.write(uploadedFile); 
+		}
+	}
+}
+
+
+Product product = new Product();
+product.setProductId(productId);
+product.setName(name);
+product.setUnitPrice(unitPrice);
+product.setDescription(description);
+product.setManufacturer(manufacturer);
+product.setCategory(category);
+product.setUnitsInStock(unitsInStock);
+product.setCondition(condition);
+product.setFile(fileName); 
+
+
+ProductRepository productRepo = new ProductRepository();
+int insertResult = productRepo.insert(product); 
+
+
+if (insertResult > 0) {
+    out.println("<h2>제품 정보가 성공적으로 추가되었습니다!</h2>");
+    out.println("<h3>추가된 제품 정보:</h3>");
+    out.println("<ul>");
+    out.println("<li><strong>제품 ID:</strong> " + product.getProductId() + "</li>");
+    out.println("<li><strong>이름:</strong> " + product.getName() + "</li>");
+    out.println("<li><strong>가격:</strong> " + product.getUnitPrice() + " 원</li>");
+    out.println("<li><strong>설명:</strong> " + product.getDescription() + "</li>");
+    out.println("<li><strong>제조사:</strong> " + product.getManufacturer() + "</li>");
+    out.println("<li><strong>카테고리:</strong> " + product.getCategory() + "</li>");
+    out.println("<li><strong>재고 수량:</strong> " + product.getUnitsInStock() + "</li>");
+    out.println("<li><strong>상태:</strong> " + product.getCondition() + "</li>");
+    out.println("<li><strong>파일:</strong> " + product.getFile() + "</li>");
+    out.println("</ul>");
+} else {
+    out.println("<p style='color:red;'>제품 정보 추가에 실패했습니다.</p>");
+}
 %>

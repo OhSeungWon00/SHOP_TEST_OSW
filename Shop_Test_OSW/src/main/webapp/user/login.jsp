@@ -17,19 +17,19 @@
         String root = request.getContextPath();
         String error = request.getParameter("error");
         
-        // 이미 로그인한 경우
+     
         String loginId = (String) session.getAttribute("loginId");
         
-        // 세션에서 User 객체를 가져옵니다. 
+       
         User user = (User) session.getAttribute("loginUser");
         
-        // 로그인된 경우 이미 로그인 페이지로 리다이렉트
+       
         if (user != null) {
             response.sendRedirect(root + "/user/logged.jsp");
-            return; // 리다이렉트 후 코드 종료
+            return; 
         }
         
-        // 아이디 저장 쿠키 가져오기
+        
         Cookie[] cookies = request.getCookies();
         String rememberId = null;
         if (cookies != null) {

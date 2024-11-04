@@ -16,11 +16,11 @@
     String phone = request.getParameter("phone");
     String address = request.getParameter("address");
 
-    // 생일과 이메일 주소 조합
-    String birth = year + "-" + month + "-" + day; // 예: 1990-01-01
-    String mail = mail1 + "@" + mail2; // 예: example@naver.com
+   
+    String birth = year + "-" + month + "-" + day; 
+    String mail = mail1 + "@" + mail2; 
 
-    // User 객체 생성 및 값 설정
+   
     User user = new User();
     user.setId(id);
     user.setPassword(password);
@@ -31,24 +31,25 @@
     user.setPhone(phone);
     user.setAddress(address);
 
-    // UserRepository를 이용해 회원 등록 처리
+   
     UserRepository userRepository = new UserRepository();
     int result = userRepository.insert(user);
 
-    // 회원가입 성공 여부에 따라 화면 전환
+   
     if (result > 0) {
+    	session.setAttribute("status", "signup");
+    	   response.sendRedirect("complete.jsp?msg=1");
     	%>
         <script>
-           window.location.href = "complete.jsp?msg=1"; // 리다이렉트
+           window.location.href = "login.jsp"; // 리다이렉트
        </script>
        <%
     } else {
-        // 회원가입 실패 시 에러 메시지와 함께 다시 회원가입 페이지로 이동
+        
         %>
          <script>
             window.location.href = "join.jsp"; // 리다이렉트
         </script>
         <%
-        return; // 중단
     }
 %>

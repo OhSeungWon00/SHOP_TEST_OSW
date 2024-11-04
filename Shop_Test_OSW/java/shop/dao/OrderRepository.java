@@ -41,7 +41,6 @@ public class OrderRepository extends JDBConnection {
 	}
 
 	/**
-	 * 최근 등록한 orderNo
 	 * 
 	 * @return 최근 등록된 orderNo 값
 	 */
@@ -104,21 +103,20 @@ public class OrderRepository extends JDBConnection {
 		List<Product> products = new ArrayList<>();
 		String sql = "SELECT p.name, p.unit_price, io.amount " + "FROM `order` o "
 				+ "JOIN product_io io ON o.order_no = io.order_no " + "JOIN product p ON io.product_id = p.product_id "
-				+ "WHERE o.order_no = ?"; // 주문 번호로 조회
+				+ "WHERE o.order_no = ?"; 
 
 		try {
 			psmt = con.prepareStatement(sql);
-			psmt.setInt(1, orderNo); // 주문 번호 파라미터 설정
+			psmt.setInt(1, orderNo); 
 
-			rs = psmt.executeQuery(); // 쿼리 실행
+			rs = psmt.executeQuery(); 
 
 			while (rs.next()) {
 				Product product = new Product();
-				product.setName(rs.getString("name")); // 제품 이름
-				product.setUnitPrice(rs.getInt("unit_price")); // 제품 단가
-				product.setAmount(rs.getInt("amount")); // 수량
-
-				products.add(product); // 리스트에 제품 추가
+				product.setName(rs.getString("name")); 
+				product.setUnitPrice(rs.getInt("unit_price")); 
+				product.setAmount(rs.getInt("amount")); 
+				products.add(product); 
 			}
 		} catch (SQLException e) {
 			System.err.println("비회원 주문 내역 조회 중 예외 발생!");

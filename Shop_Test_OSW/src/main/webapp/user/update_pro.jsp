@@ -30,8 +30,9 @@ UserRepository userDAO = new UserRepository();
 int result = userDAO.update(user);
 
 if (result > 0) {
-	// 세션에서 사용자 정보 업데이트
-	session.setAttribute("loginUser", user);
+
+	 session.setAttribute("status", "update");
+	 response.sendRedirect("complete.jsp?msg=2");
 %>
 <script>
 	alert("회원 정보가 성공적으로 업데이트 되었습니다.");

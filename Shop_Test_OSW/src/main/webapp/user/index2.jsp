@@ -30,7 +30,7 @@ String root = request.getContextPath();
 					<input type="submit" class="btn btn-lg btn-primary" value="상품목록" />
 				</form>
 				<form action="login.jsp" method="post">
-					<input type="submit" class="btn btn-lg btn-primary" value="로그아웃" />
+					<input type="submit" class="btn btn-lg btn-primary" value="로그인" />
 				</form>
 			</div>
 		</div>

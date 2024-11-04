@@ -7,19 +7,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Shop</title>
-<jsp:include page="/layout/meta.jsp" />
-<jsp:include page="/layout/link.jsp" />
+<jsp:include page="/layout/meta.jsp" /> <jsp:include page="/layout/link.jsp" />
 </head>
 <body>
 
 	<%
-	// 로그인 상태 확인
+	
 	Boolean login = (Boolean) session.getAttribute("login");
 	if (login == null) {
-		login = false; // 기본값 설정
+		login = false; 
 	}
 
-	// 루트 경로 설정
+	
 	String root = request.getContextPath();
 	%>
 

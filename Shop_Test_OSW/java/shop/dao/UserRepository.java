@@ -32,13 +32,13 @@ public class UserRepository extends JDBConnection {
 			psmt.setString(7, user.getPhone());
 			psmt.setString(8, user.getAddress());
 
-			result = psmt.executeUpdate(); // SQL 쿼리 실행 및 반영된 행 수 반환
+			result = psmt.executeUpdate(); 
 			System.out.println();
 		} catch (Exception e) {
 			System.err.println("회원등록 시, 예외 발생!!");
 			e.printStackTrace();
 		}
-		return result; // 반영된 행 수 반환
+		return result;
 	}
 
 	/**
@@ -49,32 +49,32 @@ public class UserRepository extends JDBConnection {
 	 * @return 로그인한 사용자 정보
 	 */
 	public User login(String id, String pw) {
-		User user = null; // 사용자 정보를 담을 변수
-		String sql = "SELECT * FROM user WHERE id = ? AND password = ?"; // SQL 쿼리
+		User user = null; 
+		String sql = "SELECT * FROM user WHERE id = ? AND password = ?"; 
 
 		try {
 			psmt = con.prepareStatement(sql);
-			psmt.setString(1, id); // 사용자 ID 설정
-			psmt.setString(2, pw); // 비밀번호 설정
+			psmt.setString(1, id); 
+			psmt.setString(2, pw); 
 
-			rs = psmt.executeQuery(); // 쿼리 실행
+			rs = psmt.executeQuery(); 
 
-			if (rs.next()) { // 결과가 있을 경우
-				user = new User(); // User 객체 생성
-				user.setId(rs.getString("id")); // ID 설정
-				user.setPassword(rs.getString("password")); // 비밀번호 설정
-				user.setName(rs.getString("name")); // 이름 설정
-				user.setGender(rs.getString("gender")); // 성별 설정
-				user.setBirth(rs.getString("birth")); // 생년월일 설정
-				user.setMail(rs.getString("mail")); // 이메일 설정
-				user.setPhone(rs.getString("phone")); // 전화번호 설정
-				user.setAddress(rs.getString("address")); // 주소 설정
+			if (rs.next()) { 
+				user = new User(); 
+				user.setId(rs.getString("id")); 
+				user.setPassword(rs.getString("password"));
+				user.setName(rs.getString("name"));
+				user.setGender(rs.getString("gender"));
+				user.setBirth(rs.getString("birth")); 
+				user.setMail(rs.getString("mail")); 
+				user.setPhone(rs.getString("phone")); 
+				user.setAddress(rs.getString("address")); 
 			}
 		} catch (SQLException e) {
 			System.err.println("로그인 중 예외 발생!!");
 			e.printStackTrace();
 		}
-		return user; // 로그인한 사용자 정보 반환 (없으면 null)
+		return user; 
 	}
 
 	/**
@@ -84,26 +84,26 @@ public class UserRepository extends JDBConnection {
 	 * @return 사용자 정보
 	 */
 	public User getUserById(String id) {
-		User user = null; // 사용자 정보를 담을 변수
-		String sql = "SELECT * FROM user WHERE id = ?"; // SQL 쿼리
+		User user = null; 
+		String sql = "SELECT * FROM user WHERE id = ?";
 
 		try {
 			psmt = con.prepareStatement(sql);
-			psmt.setString(1, id); // 사용자 ID 설정
+			psmt.setString(1, id); 
 
-			rs = psmt.executeQuery(); // 쿼리 실행
+			rs = psmt.executeQuery(); 
 
-			if (rs.next()) { // 결과가 있을 경우
-				user = new User(); // User 객체 생성
-				user.setId(rs.getString("id")); // ID 설정
-				user.setPassword(rs.getString("password")); // 비밀번호 설정 (필요 시)
-				user.setName(rs.getString("name")); // 이름 설정
-				user.setGender(rs.getString("gender")); // 성별 설정
-				user.setBirth(rs.getString("birth")); // 생년월일 설정
-				user.setMail(rs.getString("mail")); // 이메일 설정
-				user.setPhone(rs.getString("phone")); // 전화번호 설정
-				user.setAddress(rs.getString("address")); // 주소 설정
-				user.setRegistDay(rs.getString("regist_day")); // 등록일 설정
+			if (rs.next()) { 
+				user = new User(); 
+				user.setId(rs.getString("id")); 
+				user.setPassword(rs.getString("password")); 
+				user.setName(rs.getString("name")); 
+				user.setGender(rs.getString("gender")); 
+				user.setBirth(rs.getString("birth"));
+				user.setMail(rs.getString("mail"));
+				user.setPhone(rs.getString("phone")); 
+				user.setAddress(rs.getString("address")); 
+				user.setRegistDay(rs.getString("regist_day")); 
 			}
 		} catch (SQLException e) {
 			System.err.println("사용자 조회 중 예외 발생!!");
@@ -120,7 +120,7 @@ public class UserRepository extends JDBConnection {
 				e.printStackTrace();
 			}
 		}
-		return user; // 사용자 정보 반환 (없으면 null)
+		return user; 
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class UserRepository extends JDBConnection {
 	 * @return 수정된 행의 수
 	 */
 	public int update(User user) {
-		int result = 0; // 수정된 행 수
+		int result = 0; 
 		String sql = "UPDATE user SET name = ?, gender = ?, birth = ?, mail = ?, phone = ?, address = ? WHERE id = ?";
 
 		try {
@@ -143,13 +143,13 @@ public class UserRepository extends JDBConnection {
 			psmt.setString(6, user.getAddress());
 			psmt.setString(7, user.getId());
 
-			result = psmt.executeUpdate(); // 쿼리 실행 (업데이트)
+			result = psmt.executeUpdate();
 
 		} catch (SQLException e) {
 			System.err.println("회원 수정 중 예외 발생!!");
 			e.printStackTrace();
 		}
-		return result; // 수정된 행의 수 반환
+		return result; 
 	}
 
 	/**
@@ -159,20 +159,20 @@ public class UserRepository extends JDBConnection {
 	 * @return 삭제된 행의 수
 	 */
 	public int delete(String id) {
-		int result = 0; // 삭제된 행 수
-		String sql = "DELETE FROM user WHERE id = ?"; // SQL 쿼리
+		int result = 0; 
+		String sql = "DELETE FROM user WHERE id = ?"; 
 
 		try {
 			psmt = con.prepareStatement(sql);
-			psmt.setString(1, id); // 사용자 ID 설정
+			psmt.setString(1, id); 
 
-			result = psmt.executeUpdate(); // 쿼리 실행 (삭제)
+			result = psmt.executeUpdate(); 
 
 		} catch (SQLException e) {
 			System.err.println("회원 삭제 중 예외 발생!!");
 			e.printStackTrace();
 		} 
-		return result; // 삭제된 행의 수 반환
+		return result; 
 	}
 
 	/**
@@ -184,10 +184,10 @@ public class UserRepository extends JDBConnection {
 		PersistentLogin persistentLogin = selectToken(userId);
 		String token = null;
 		if (persistentLogin == null) {
-			// 토큰이 없는 경우, 삽입
+			
 			token = insertToken(userId);
 		} else {
-			// 토큰이 있는 경우, 갱신
+			
 			token = updateToken(userId);
 		}
 		return token;
@@ -332,9 +332,9 @@ public class UserRepository extends JDBConnection {
 			psmt = con.prepareStatement(sql);
 			psmt.setString(1, userId);
 			psmt.setString(2, token);
-			psmt.setString(3, token); // 중복될 경우 기존 토큰을 업데이트
+			psmt.setString(3, token); 
 
-			result = psmt.executeUpdate(); // SQL 쿼리 실행
+			result = psmt.executeUpdate(); 
 			System.out.println("자동 로그인 정보 " + result + "개가 저장되었습니다.");
 		} catch (SQLException e) {
 			System.err.println("자동 로그인 정보 저장 중, 에러 발생!");
